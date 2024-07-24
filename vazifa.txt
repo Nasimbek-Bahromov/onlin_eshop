@@ -1,0 +1,5 @@
+1) banner modelni frontga chiqarish
+2) Category modelga qo`shimcha xususiyatalr qo`shish
+3) navbardagi (ol-ul)dagi li teglarini keraksizlarini o`chiqarish
+4) navbar va footerdagi info ma`lumotlar uchun model yozish va ularni frontga ko`rsatish
+5) login qilinganda navbarda userning infolari ko`rinsin
