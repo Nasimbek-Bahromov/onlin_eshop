@@ -37,7 +37,9 @@
                         <td>{{ product.category.name }}</td>
                         <td>{{ product.name }}</td>
                         <td>
-                            <a href="{% url 'detailProduct' product.id %}" class="btn btn-info btn-sm">Detail</a>
+                            <a href="{% url 'detailProduct' product.generate_code %}" class="btn btn-info btn-sm">Detail</a>
+                            <a href="{% url 'deleteProduct' product.generate_code %}" class="btn btn-info btn-sm">Delete</a>
+                            <a href="{% url 'updateProduct' product.generate_code %}" class="btn btn-info btn-sm">Update</a>
                         </td>
                     </tr>
                     {% endfor %}

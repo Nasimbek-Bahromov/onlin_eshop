@@ -18,8 +18,8 @@ def listCategory(request):
     return render(request, 'back-office/category/list.html', context)
 
 
-def detailCategory(request, id):
-    queryset = models.Category.objects.get(id=id)
+def detailCategory(request, generate):
+    queryset = models.Category.objects.get(generate_code=generate)
     
     context = {}
     context['queryset'] = queryset
@@ -34,15 +34,15 @@ def createCategory(request):
     return redirect('listCategory')
 
 
-def updateCategory(request, id):
-
-    queryset = models.Category.objects.get(id=id)
+def updateCategory(request):
+    generate_code = request.POST.get('generate_code')
+    queryset = models.Category.objects.get(generate_code=generate_code)
     queryset.name = request.POST['name']
     queryset.save()
 
     return redirect('listCategory')
 
 
-def deleteCategory(request, id):
-    models.Category.objects.get(id=id).delete()
+def deleteCategory(request, generate):
+    models.Category.objects.get(generate_code=generate).delete()
     return redirect('listCategory')

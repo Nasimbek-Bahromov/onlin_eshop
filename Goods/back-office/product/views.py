@@ -15,8 +15,8 @@ def listProduct(request):
     return render(request, 'back-office/product/list.html',context)
 
 
-def detailProduct(request, id):
-    queryset = models.Product.objects.get(id=id)
+def detailProduct(request, generate):
+    queryset = models.Product.objects.get(generate_code=generate)
     context = {}
     print(models.ProductImg.objects.filter(product=queryset))
     context['queryset'] = queryset
@@ -54,9 +54,43 @@ def createProduct(request):
                 img = image,
                 product = product
             )
+        return redirect('listProduct')
+    
     return render(request, 'back-office/product/create.html', context)
+        
+
+def updateProduct(request, generate):
+    product = models.Product.objects.get(generate_code=generate)
+    context = {
+        'categorys': models.Category.objects.all(),
+        'product': product
+    }
+
+    if request.method == 'POST':
+        product.name = request.POST['name']
+        product.quantity = request.POST['quantity']
+        product.price = request.POST['price']
+        product.description = request.POST['description']
+        product.category_id = request.POST['category_id']
+        product.save()
+
+        images = request.FILES.getlist('images')
+
+        for image in images:
+            models.ProductImg.objects.create(
+                img = image,
+                product = product
+            )
+
+        return redirect('listProduct')
+
+    return render(request, 'back-office/product/update.html', context)
+   
 
 
-def deleteProduct(request, id):
-    models.Product.objects.get(id=id).delete()
+def deleteProduct(request, generate):
+    models.Product.objects.get(generate_code=generate).delete()
     return redirect('listProduct')
+
+
+
