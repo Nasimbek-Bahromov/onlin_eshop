@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Details</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Your Cart</h1>
+        <div class="card">
+            <div class="card-header">
+                Cart Details
+            </div>
+            <div class="card-body">
+                {% if cart.cartproduct_set.count %}
+                    <ul class="list-group">
+                        {% for cart_product in cart.cartproduct_set.all %}
+                            <li class="list-group-item">
+                                {{ cart_product.product.name }} - {{ cart_product.quantity }}
+                                <a href="{% url 'delete_product_from_cart' cart_product.product.generate_code %}" class="btn btn-danger btn-sm float-right">Delete</a>
+                                <a href="{% url 'substract_product_from_cart' cart_product.product.generate_code 1 %}" class="btn btn-warning btn-sm float-right mr-2">-</a>
+                                <a href="{% url 'add_product_to_cart' cart_product.product.generate_code 1 %}" class="btn btn-primary btn-sm float-right mr-2">+</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-center">Your cart is empty.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'create_order' %}" class="btn btn-success">Create Order</a>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

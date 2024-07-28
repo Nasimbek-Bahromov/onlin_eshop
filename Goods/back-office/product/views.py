@@ -5,7 +5,9 @@
 # delete ---
 
 from Goods import models
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import ProductEnterForm
+from Goods.models import ProductEnter, Product
 
 
 def listProduct(request):
@@ -85,7 +87,57 @@ def updateProduct(request, generate):
         return redirect('listProduct')
 
     return render(request, 'back-office/product/update.html', context)
-   
+
+
+def product_enter_list(request):
+    product_enters = ProductEnter.objects.all()
+    return render(request, 'back-office/product/product_enter_list.html', {'product_enters': product_enters})
+
+
+def create_product_enter(request):
+    context = {'products': Product.objects.all()}
+
+    if request.method == 'POST':
+        try:
+            product = Product.objects.get(generate_code=request.POST['product_id'])
+        except Product.DoesNotExist:
+            return render(request, 'back-office/product/create_product_enter.html', {
+                'products': Product.objects.all(),
+                'error': 'Product not found'
+            })
+
+        product_enter = ProductEnter(
+            product=product,
+            quantity=int(request.POST['quantity']),
+            date=request.POST['date'],
+            description=request.POST['description']
+        )
+        product_enter.save()
+        return redirect('product_enter_list')
+
+    return render(request, 'back-office/product/create_product_enter.html', context)
+
+
+
+
+def update_product_enter(request, generate):
+    product_enter = get_object_or_404(ProductEnter, generate_code=generate)
+
+    if request.method == 'POST':
+        form = ProductEnterForm(request.POST, instance=product_enter)
+        if form.is_valid():
+            product_enter = form.save(commit=False)
+            product_enter.save()
+            return redirect('product_enter_list')
+    else:
+        form = ProductEnterForm(instance=product_enter)
+
+    return render(request, 'back-office/product/update_product_enter.html', {'form': form, 'product_enter': product_enter})
+
+
+def product_enter_detail(request, generate):
+    product_enter = get_object_or_404(ProductEnter, generate_code=generate)
+    return render(request, 'back-office/product/product_enter_detail.html', {'product_enter': product_enter})
 
 
 def deleteProduct(request, generate):

@@ -12,7 +12,7 @@ def main(request):
     return render(request, 'index.html', context)
 
 
-def admin_page(request):
+def admin(request):
     return render(request, 'admin')
 
 

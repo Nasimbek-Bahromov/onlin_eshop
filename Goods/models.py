@@ -53,22 +53,27 @@ class Product(GenerateCode):
         return self.name
     
 class ProductEnter(GenerateCode):
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null = True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField()
-    old_quantity = models.IntegerField(blank = True)
+    old_quantity = models.IntegerField(blank=True)
     date = models.DateTimeField()
     description = models.TextField()
 
-    def str(self):
+    def __str__(self):
         return self.product.name
-    
+
     def save(self, *args, **kwargs):
-        if not self.generate_code:
+        if not self.generate_code:  # Yangi obyekt yaratilayotgan bo'lsa
             self.old_quantity = self.product.quantity
             self.product.quantity += self.quantity
         else:
-            self.product.quantity -= ProductEnter.objects.get(generate_code=self.generate_code).quantity
+            old_entry = ProductEnter.objects.get(generate_code=self.generate_code)
+            self.product.quantity -= old_entry.quantity
             self.product.quantity += self.quantity
+        self.product.save()
+        super().save(*args, **kwargs)
+
+
 
 
 class ProductImg(GenerateCode):
